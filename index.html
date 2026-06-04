@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimal Invoice Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-wrap">
+        <div class="brand-mark" id="brandMark">SE</div>
+        <div>
+          <h1 id="sideBusinessName">Invoice Studio</h1>
+          <p>Modern invoice system</p>
+        </div>
+      </div>
+      <nav>
+        <button class="nav-item active" data-panel="dashboardPanel">Dashboard</button>
+        <button class="nav-item" data-panel="invoicePanel">Create Invoice</button>
+        <button class="nav-item" data-panel="historyPanel">Invoice History</button>
+        <button class="nav-item" data-panel="itemsPanel">Saved Items</button>
+        <button class="nav-item" data-panel="settingsPanel">Settings</button>
+      </nav>
+      <div class="sidebar-card">
+        <span>Storage</span>
+        <p id="storageStatus">Local browser save active.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Welcome back</p>
+          <h2>Minimal Invoice Generator</h2>
+        </div>
+        <div class="topbar-actions">
+          <button class="ghost-btn" id="resetBtn">Reset</button>
+          <button class="primary-btn" id="saveInvoiceBtn">Save Invoice</button>
+          <button class="dark-btn" id="printBtn">Download PDF</button>
+        </div>
+      </header>
+
+      <section class="panel active" id="dashboardPanel">
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total Invoices</span><strong id="totalInvoices">0</strong></article>
+          <article class="stat-card"><span>Total Value</span><strong id="totalValue">LKR 0.00</strong></article>
+          <article class="stat-card"><span>Total Balance Due</span><strong id="totalBalanceDue">LKR 0.00</strong></article>
+          <article class="stat-card"><span>Latest Invoice</span><strong id="latestInvoice">-</strong></article>
+        </div>
+        <div class="welcome-card">
+          <div>
+            <p class="eyebrow">Invoice preview</p>
+            <h3>Create clean, branded invoices in minutes.</h3>
+            <p>Add your logo, business details, customer info, saved items, tax/discount, paid amount, balance due and export a professional PDF.</p>
+          </div>
+          <button class="primary-btn" data-go="invoicePanel">Create New Invoice</button>
+        </div>
+      </section>
+
+      <section class="panel" id="invoicePanel">
+        <div class="editor-layout">
+          <div class="form-card">
+            <h3>Business Details</h3>
+            <div class="logo-uploader">
+              <label for="logoInput" class="logo-box" id="logoBox">Upload Logo</label>
+              <input type="file" id="logoInput" accept="image/*" hidden />
+              <button class="ghost-btn small" id="removeLogoBtn">Remove Logo</button>
+            </div>
+            <div class="grid-2">
+              <label>Business Name<input id="businessName" type="text" placeholder="SEVEN ELEMENTS" /></label>
+              <label>Email<input id="businessEmail" type="email" placeholder="hello@business.com" /></label>
+              <label>Phone<input id="businessPhone" type="text" placeholder="+94 XX XXX XXXX" /></label>
+              <label>Address<input id="businessAddress" type="text" placeholder="Colombo, Sri Lanka" /></label>
+            </div>
+
+            <h3>Invoice Details</h3>
+            <div class="grid-3">
+              <label>Invoice No<input id="invoiceNumber" type="text" /></label>
+              <label>Invoice Date<input id="invoiceDate" type="date" /></label>
+              <label>Due Date<input id="dueDate" type="date" /></label>
+            </div>
+
+            <h3>Client Details</h3>
+            <div class="grid-2">
+              <label>Client Name<input id="clientName" type="text" placeholder="Client / Company name" /></label>
+              <label>Client Email<input id="clientEmail" type="email" placeholder="client@email.com" /></label>
+              <label>Client Phone<input id="clientPhone" type="text" placeholder="Phone number" /></label>
+              <label>Client Address<input id="clientAddress" type="text" placeholder="Client address" /></label>
+            </div>
+
+            <div class="section-title-row">
+              <h3>Items / Services</h3>
+              <div class="button-row">
+                <button class="ghost-btn small" id="addSavedItemBtn">+ From Saved</button>
+                <button class="ghost-btn small" id="addItemBtn">+ Add Item</button>
+              </div>
+            </div>
+            <div id="itemsEditor" class="items-editor"></div>
+
+            <h3>Payment & Notes</h3>
+            <div class="grid-3">
+              <label>Discount (%)<input id="discount" type="number" value="0" min="0" /></label>
+              <label>Tax (%)<input id="tax" type="number" value="0" min="0" /></label>
+              <label>Paid Amount<input id="paidAmount" type="number" value="0" min="0" /></label>
+            </div>
+            <label>Payment Details<textarea id="paymentDetails" rows="3" placeholder="Bank name, account number, account holder"></textarea></label>
+            <label>Notes / Terms<textarea id="notes" rows="3" placeholder="Thank you for your business."></textarea></label>
+          </div>
+
+          <div class="preview-wrap">
+            <div class="invoice-preview" id="invoicePreview">
+              <div class="invoice-head">
+                <div>
+                  <div class="preview-logo" id="previewLogo">SE</div>
+                  <h2 id="previewBusinessName">SEVEN ELEMENTS</h2>
+                  <p id="previewBusinessInfo">Colombo, Sri Lanka<br/>hello@business.com | +94 XX XXX XXXX</p>
+                </div>
+                <div class="invoice-meta">
+                  <h1>INVOICE</h1>
+                  <p><span>Invoice No</span><strong id="previewInvoiceNumber">INV-0001</strong></p>
+                  <p><span>Date</span><strong id="previewDate">-</strong></p>
+                  <p><span>Due Date</span><strong id="previewDueDate">-</strong></p>
+                </div>
+              </div>
+
+              <div class="bill-row">
+                <div>
+                  <span>Bill To</span>
+                  <h3 id="previewClientName">Client Name</h3>
+                  <p id="previewClientInfo">Client address<br/>client@email.com | Phone</p>
+                </div>
+              </div>
+
+              <table class="invoice-table">
+                <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                <tbody id="previewItems"></tbody>
+              </table>
+
+              <div class="summary-row">
+                <div class="notes-block">
+                  <h4>Payment Details</h4>
+                  <p id="previewPayment">-</p>
+                  <h4>Notes</h4>
+                  <p id="previewNotes">Thank you for your business.</p>
+                </div>
+                <div class="totals-box">
+                  <p><span>Subtotal</span><strong id="subtotalText">LKR 0.00</strong></p>
+                  <p><span>Discount</span><strong id="discountText">LKR 0.00</strong></p>
+                  <p><span>Tax</span><strong id="taxText">LKR 0.00</strong></p>
+                  <p><span>Total</span><strong id="grandTotalText">LKR 0.00</strong></p>
+                  <p><span>Amount Paid</span><strong id="paidAmountText">LKR 0.00</strong></p>
+                  <p class="grand balance"><span>Balance Due</span><strong id="balanceDueText">LKR 0.00</strong></p>
+                </div>
+              </div>
+              <div class="invoice-footer">Generated by Minimal Invoice Studio</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="historyPanel">
+        <div class="table-card">
+          <div class="section-title-row">
+            <h3>Saved Invoices</h3>
+            <button class="ghost-btn small" id="clearHistoryBtn">Clear History</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="itemsPanel">
+        <div class="form-card narrow">
+          <div class="section-title-row"><h3>Saved Items / Services</h3></div>
+          <p class="muted">Save frequently used services such as Logo Design, Brand Identity Package, Printing Design etc. Then add them quickly to any invoice.</p>
+          <div class="grid-3">
+            <label>Item Name<input id="savedItemName" type="text" placeholder="Logo Design Package" /></label>
+            <label>Default Qty<input id="savedItemQty" type="number" min="0" value="1" /></label>
+            <label>Default Price<input id="savedItemPrice" type="number" min="0" value="0" /></label>
+          </div>
+          <button class="primary-btn" id="saveItemBtn">Save Item</button>
+          <div id="savedItemsList" class="saved-items-list"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="settingsPanel">
+        <div class="form-card narrow">
+          <h3>Brand Settings</h3>
+          <label>Accent Color<input id="accentColor" type="color" value="#111827" /></label>
+          <label>Currency Symbol<input id="currency" type="text" value="LKR" /></label>
+          <p class="muted">Settings are saved automatically in your browser.</p>
+
+          <div class="divider"></div>
+          <h3>Cloud Backup / Multi-device Sync</h3>
+          <p class="muted">Optional. Add your Supabase URL and anon key in <b>supabase-config.js</b>. Then sign up/login below and click Sync.</p>
+          <div class="cloud-card">
+            <div class="grid-2">
+              <label>Email<input id="authEmail" type="email" placeholder="you@email.com" /></label>
+              <label>Password<input id="authPassword" type="password" placeholder="Minimum 6 characters" /></label>
+            </div>
+            <div class="button-row">
+              <button class="ghost-btn small" id="signupBtn">Sign Up</button>
+              <button class="primary-btn small" id="loginBtn">Login</button>
+              <button class="ghost-btn small" id="logoutBtn">Logout</button>
+            </div>
+            <div class="button-row">
+              <button class="dark-btn small" id="syncUploadBtn">Upload Local Data to Cloud</button>
+              <button class="ghost-btn small" id="syncDownloadBtn">Download Cloud Data</button>
+            </div>
+            <p class="muted" id="cloudStatus">Cloud sync not configured.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
